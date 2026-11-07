@@ -1,0 +1,13 @@
+project        = "pilot-light-dr"
+primary_region = "us-east-1"
+dr_region      = "us-west-2"
+
+# Optional: Route 53 failover (needs a domain you own in Route 53)
+# domain_name    = "app.example.com"
+# hosted_zone_id = "Z0123456789ABCDEFGHIJ"
+
+# Optional: alarm notifications
+# alert_email = "you@example.com"
+
+# Keep false for pilot light. Set to true after a failover.
+dr_active = false
