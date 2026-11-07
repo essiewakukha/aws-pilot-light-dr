@@ -1,0 +1,38 @@
+#!/bin/bash
+set -euxo pipefail
+
+mkdir -p /opt/app
+
+%{ if install_app ~}
+dnf install -y python3-pip
+pip3 install flask==3.0.3 gunicorn==22.0.0 psycopg2-binary==2.9.9 boto3
+
+cat > /opt/app/app.py <<'APP_EOF'
+${app_source}
+APP_EOF
+%{ endif ~}
+
+cat > /etc/app.env <<ENV_EOF
+DB_HOST=${db_host}
+DB_NAME=${db_name}
+DB_SECRET_ARN=${db_secret_arn}
+AWS_REGION=${region}
+ENV_EOF
+
+cat > /etc/systemd/system/app.service <<'SVC_EOF'
+[Unit]
+Description=Pilot Light DR demo app
+After=network-online.target
+
+[Service]
+EnvironmentFile=/etc/app.env
+WorkingDirectory=/opt/app
+ExecStart=/usr/local/bin/gunicorn --bind 0.0.0.0:8080 --workers 2 app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+SVC_EOF
+
+systemctl daemon-reload
+systemctl enable --now app

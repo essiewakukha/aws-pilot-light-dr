@@ -21,9 +21,6 @@ resource "aws_internet_gateway" "this" {
   tags   = { Name = var.name }
 }
 
-# Public subnets: ALB + app instances. App instances accept traffic only from
-# the ALB security group. (Cost trade-off: no NAT gateway idling in the DR
-# Region. See docs/cost-estimate.md for the production-hardened variant.)
 resource "aws_subnet" "public" {
   count                   = length(local.azs)
   vpc_id                  = aws_vpc.this.id
@@ -33,7 +30,6 @@ resource "aws_subnet" "public" {
   tags                    = { Name = "${var.name}-public-${local.azs[count.index]}" }
 }
 
-# Private subnets: RDS only, no route to the internet.
 resource "aws_subnet" "private" {
   count             = length(local.azs)
   vpc_id            = aws_vpc.this.id
