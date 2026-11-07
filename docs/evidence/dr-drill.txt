@@ -1,0 +1,9 @@
+Replica lag (24h): max=673.0s avg=155.45714285714286s  RPO target=900s
+PASS: RPO met
+[19:41:15] Scaling DR ASG to 1 instance
+[19:41:20] Polling http://pilot-light-dr-dr-217580741.us-west-2.elb.amazonaws.com/health
+[19:42:25] PASS: DR Region served healthy traffic in 1m 10s
+{"region":"us-west-2","status":"ok"}
+
+Add DB promotion time (typically 5-15 min) to estimate full RTO.
+[19:42:25] Scaling DR ASG back to 0 (pilot light)
